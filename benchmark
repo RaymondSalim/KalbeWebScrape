@@ -1,49 +1,80 @@
-tokopedia_2020-10-17 16꞉23꞉11.556288.json
+tokopedia_2020-10-17 16꞉23꞉11.556288.txt
     - Time taken: 1:54:31.560352
     - Total items: 1964
     - Avg time: 3.498s / item
 
-tokopedia_2020-10-17 23꞉08꞉16.134907.json
+tokopedia_2020-10-17 23꞉08꞉16.134907.txt
     - Time taken: 2:47:19.250973
     - Total items: 2918
     - Avg time: 3.440s / item
 
-tokopedia_2020-10-18 12꞉33꞉52.599723.json
+tokopedia_2020-10-18 12꞉33꞉52.599723.txt
     - Time taken: 2:13:43.247870
     - Total items: 1567
     - Avg time: 5.1197s / item
 	
-tokopedia_2020-10-19 21꞉47꞉40.424254.json
-	- Time taken: 0:19:41.996558
-	- Total items: 177
-	- Avg time: 6.6779s / item
+tokopedia_2020-10-19 21꞉47꞉40.424254.txt
+    - Time taken: 0:19:41.996558
+    - Total items: 177
+    - Avg time: 6.6779s / item
 	
-tokopedia_2020-10-20 10꞉29꞉12.616707.json
-	- Time taken: 0:13:58.376749
-	- Total items: 141
-	- Avg time: 5.9433s / item
+tokopedia_2020-10-20 10꞉29꞉12.616707.txt
+    - Time taken: 0:13:58.376749
+    - Total items: 141
+    - Avg time: 5.9433s / item
 	
-tokopedia_2020-10-20 11꞉50꞉19.153977.json
-	- Time taken: 0:12:30.087466
-	- Total items: 160
-	- Avg time: 4.6875s / item
+tokopedia_2020-10-20 11꞉50꞉19.153977.txt
+    - Time taken: 0:12:30.087466
+    - Total items: 160
+    - Avg time: 4.6875s / item
 
-bukalapak2020-10-18 00꞉12꞉32.991648.json
+tokopedia_2020-10-22 15꞉07꞉21.279114.json
+    - Time taken: 0:12:42.455829
+    - Total items: 158
+    - Avg time:4.8228s / item
+
+tokopedia_2020-10-22 19꞉34꞉43.920513.json
+    - Time taken: 0:33:59.081200
+    - Total items: 393
+    - Avg time: 5.1883s / item
+
+tokopedia_2020-10-22 23꞉00꞉46.819105.json
+    - Time taken: 0:34:41.984762
+    - Total items: 445
+    - Avg time: 4.6787s / item
+
+bukalapak2020-10-18 00꞉12꞉32.991648.txt
     - Time taken: 0:27:41.103554
     - Total items: 760
     - Avg time: 2.1855s / item
 
-bukalapak2020-10-18 10꞉45꞉22.227444.json
+bukalapak2020-10-18 10꞉45꞉22.227444.txt
     - Time taken: 0:25:08.870724
     - Total items: 615
     - Avg time: 2.4537s / item
 
-shopee_2020-10-18 01꞉14꞉09.542510.json
+bukalapak_2020-10-22 15꞉07꞉18.624209.json
+    - Time taken: 0:05:29.952309
+    - Total items: 70
+    - Avg time: 4.7143s / item
+
+bukalapak_2020-10-22 19꞉06꞉54.106249.json
+    - Time taken: 0:14:47.947014
+    - Total items: 160
+    - Avg time: 5.55s / item
+
+shopee_2020-10-18 01꞉14꞉09.542510.txt
     - Time taken: 0:09:29.806884
     - Total items: 248
     - Avg time: 2.2983s / item
-	
-shopee_2020-10-22 12꞉57꞉37.248092.json
-	- Time taken: 0:07:38.123169
-	- Total items: 100
-	- Avg time: 2.66s / item
+
+shopee_2020-10-22 15꞉22꞉19.871681.json
+    - Time taken: 0:04:09.889799
+    - Total items: 100
+    - Avg time: 2.5s / item
+
+shopee_2020-10-22 19꞉08꞉04.790225.json
+    - Time taken: 0:16:53.925403
+    - Total items: 250
+    - Avg time: 4.056s / item
+

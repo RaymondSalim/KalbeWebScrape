@@ -154,7 +154,7 @@ class Shopee:
                 d['FARMASI'] = ""
                 d['E-COMMERCE'] = 'SHOPEE'
 
-                self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, 'div._3Lybjn')))
+                self.wait.until(ec.text_to_be_present_in_element((By.CSS_SELECTOR, 'div._3Lybjn')))
                 d['TOKO'] = driver.find_element_by_css_selector('div._3Lybjn').text
                 # d['shop_name'] = driver.find_element_by_class_name('_3Lybjn').text
 

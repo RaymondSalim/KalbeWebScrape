@@ -21,10 +21,11 @@ class HandleResult:
     elif str(operating_system) == 'Windows':
         output_dir = current_dir.replace('\\CLI', '\\CLI\\Output\\')
 
-    def __init__(self, data, launched_from_start, source=""):
+    def __init__(self, data, launched_from_start, source="", file_name=""):
         self.data = data
         self.launched_start = launched_from_start
         self.source = source
+        self.file_name = file_name
 
     def update(self):
         sql = int(input(
@@ -45,8 +46,8 @@ class HandleResult:
 
             mycursor = mydb.cursor()
 
-            command = """INSERT IGNORE INTO {} VALUES (%(name)s, %(url)s, %(price)s, %(discount)s, %(rating)s, %(rating_count)s, 
-            %(sold_count)s, %(shop_name)s, %(shop_category)s, %(location)s, %(description)s, %(seen_date)s, %(seen_by)s, 
+            command = """INSERT IGNORE INTO {} VALUES (%(name)s, %(url)s, %(price)s, %(discount)s, %(rating)s, %(rating_count)s,
+            %(sold_count)s, %(shop_name)s, %(shop_category)s, %(location)s, %(description)s, %(seen_date)s, %(seen_by)s,
             %(marketplace)s, %(category)s)""".format(table_name)
 
             if not mydb.is_connected():
@@ -143,7 +144,7 @@ class HandleResult:
                     os.mkdir(os.path.normpath(self.output_dir))
 
             if sql == 3:
-                file_name = f"{self.output_dir}{self.source}_{str(datetime.now()).replace(':', '꞉')}.csv"
+                file_name = self.output_dir + self.file_name[:self.file_name.rindex('.')] + '.csv'
                 print(f"Saving to {file_name}")
                 keys = self.data[0].keys()
                 with open(file_name, 'w', newline='', encoding='utf-8') as csvFile:
@@ -152,9 +153,7 @@ class HandleResult:
                     dict_writer.writerows(self.data)
 
             if sql == 4:
-                file_name = f"{self.output_dir}{self.source}_{str(datetime.now()).replace(':', '꞉')}.json"
+                file_name = self.output_dir + self.file_name[:self.file_name.rindex('.')] + '.json'
                 print(f"Saving to {file_name}")
                 with open(file_name, 'w') as outFile:
                     json.dump(self.data, outFile)
-
-

@@ -26,6 +26,8 @@ class LoadFromFile:
             if len(files) == 0:
                 print("No files found")
                 return
+            files.sort()
+
         else:
             print("No files found")
             return
@@ -36,20 +38,18 @@ class LoadFromFile:
         print('\n*************************************************************\n')
 
         number = int(input('Enter the number of the file\n')) - 1
-        file = files[number]
-        source = file[:file.index('_'):]
 
-        if "csv" in file:
+        file_name = files[number]
+
+        if "csv" in file_name:
             print("Cannot load csv file!")
             return
 
         if str(self.operating_system) == 'Linux':
-            file = f"{self.current_dir}/{file}"
+            file = f"{self.current_dir}/{file_name}"
 
         elif str(self.operating_system) == 'Windows':
-            file = f"{self.current_dir}\\{file}"
-
-
+            file = f"{self.current_dir}\\{file_name}"
 
         try:
             with open(file, 'r') as openFile:
@@ -64,8 +64,8 @@ class LoadFromFile:
                 load_error.start()
 
             else:
-                handle_data = uts.HandleResult(self.data, True, source)
-                handle_data.update()
+                upload_sql = uts.HandleResult(self.data, True, file_name=file_name)
+                upload_sql.update()
 
 
 class LoadError:
@@ -85,4 +85,3 @@ class LoadError:
         if "bukalapak" in self.f_name:
             process = BLSelenium.Bukalapak(urls=self.data)
             process.scrape_errors()
-
