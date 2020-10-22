@@ -1,9 +1,7 @@
 import platform
 import json
-import csv
 import os
 import HandleResult as uts
-import urllib.parse as parse
 from selenium import webdriver
 from datetime import datetime
 from selenium.webdriver.common.by import By
@@ -245,7 +243,8 @@ class Shopee:
         handle_data.update()
 
         if len(self.errors) > 0:
-            with open(self.file_name.replace('.json', '_errors.json'), 'w') as errorFile:
+            file_name = f"{self.output_dir}shopee_{str(datetime.now()).replace(':', '꞉')}.json"
+            with open(file_name.replace('.json', '_errors.json'), 'w') as errorFile:
                 json.dump(self.errors, errorFile)
 
     def scrape_errors(self):

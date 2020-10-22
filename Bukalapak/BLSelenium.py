@@ -1,5 +1,4 @@
 import json
-import csv
 import os
 import platform
 import HandleResult as uts
@@ -44,7 +43,7 @@ class Bukalapak:
 
     def start_driver(self):
         chrome_options = webdriver.ChromeOptions()
-        # chrome_options.headless = True
+        chrome_options.headless = True
         chrome_options.add_argument('--log-level=3')
         chrome_options.add_argument('--window-size=1080,3840')
         chrome_options.add_argument(
@@ -230,7 +229,8 @@ class Bukalapak:
         handle_data.update()
 
         if len(self.errors) > 0:
-            with open(self.file_name.replace('.json', '_errors.json'), 'w') as errorFile:
+            file_name = f"{self.output_dir}bukalapak_{str(datetime.now()).replace(':', '꞉')}.json"
+            with open(file_name.replace('.json', '_errors.json'), 'w') as errorFile:
                 json.dump(self.errors, errorFile)
 
     def scrape_errors(self):
