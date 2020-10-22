@@ -208,7 +208,16 @@ class Tokopedia:
 
                     seen_by = (
                         driver.find_element_by_css_selector('span[data-testid="lblPDPDetailProductSeenCounter"]').text)
-                    d['DILIHAT'] = int(seen_by[:seen_by.index("x"):])
+                    seen_by = seen_by[:seen_by.index("x"):]
+                    if 'rb' in seen_by:
+                        if ',' in seen_by:
+                            seen_by = int(seen_by.replace(',', '').replace('rb', '')) * 100
+                        else:
+                            seen_by = int(seen_by.replace('rb', '')) * 1000
+                    else:
+                        seen_by = seen_by.replace('.', '')
+
+                    d['DILIHAT'] = int(seen_by)
 
                     d['DESKRIPSI'] = driver.find_element_by_css_selector(
                         'div[data-testid="pdpDescriptionContainer"]').text
