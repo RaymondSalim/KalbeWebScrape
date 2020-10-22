@@ -1,7 +1,8 @@
+import csv
 import json
 import os
 import platform
-import UploadToSQL as uts
+import HandleResult as uts
 from Tokopedia import  TPSelenium
 from Shopee import ShopeeSelenium
 from Bukalapak import BLSelenium
@@ -35,14 +36,20 @@ class LoadFromFile:
         print('\n*************************************************************\n')
 
         number = int(input('Enter the number of the file\n')) - 1
-
         file = files[number]
+        source = file[:file.index('_'):]
+
+        if "csv" in file:
+            print("Cannot load csv file!")
+            return
 
         if str(self.operating_system) == 'Linux':
             file = f"{self.current_dir}/{file}"
 
         elif str(self.operating_system) == 'Windows':
             file = f"{self.current_dir}\\{file}"
+
+
 
         try:
             with open(file, 'r') as openFile:
@@ -57,8 +64,8 @@ class LoadFromFile:
                 load_error.start()
 
             else:
-                upload_sql = uts.UploadToSQL(self.data, True)
-                upload_sql.update()
+                handle_data = uts.HandleResult(self.data, True, source)
+                handle_data.update()
 
 
 class LoadError:

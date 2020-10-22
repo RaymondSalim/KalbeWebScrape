@@ -2,7 +2,7 @@ import platform
 import json
 import csv
 import os
-import UploadToSQL as uts
+import HandleResult as uts
 import urllib.parse as parse
 from selenium import webdriver
 from datetime import datetime
@@ -241,28 +241,8 @@ class Shopee:
     def handle_data(self, start_time):
         print("Time taken: " + str(datetime.now() - start_time))
 
-        upload = input("Save to SQL?\n")
-        self.file_name = f"{self.output_dir}shopee_{str(datetime.now()).replace(':', '꞉')}.json"
-        self.file_csv = self.file_name.replace('.json', '.csv')
-
-
-        if upload[0].lower() == 'y':
-            upload_sql = uts.UploadToSQL(self.data, False, self.id)
-            upload_sql.update()
-
-        else:
-            if not os.path.exists(os.path.normpath(self.output_dir)):
-                os.mkdir(os.path.normpath(self.output_dir))
-
-            print(f"Saving to {self.file_name}")
-            with open(self.file_name, 'w') as outFile:
-                json.dump(self.data, outFile)
-
-            keys = self.data[0].keys()
-            with open(self.file_csv, 'w', newline='') as csvFile:
-                dict_writer = csv.DictWriter(csvFile, keys)
-                dict_writer.writeheader()
-                dict_writer.writerows(self.data)
+        handle_data = uts.HandleResult(self.data, False, self.id)
+        handle_data.update()
 
         if len(self.errors) > 0:
             with open(self.file_name.replace('.json', '_errors.json'), 'w') as errorFile:

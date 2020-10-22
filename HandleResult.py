@@ -8,7 +8,7 @@ import stdiomask
 from datetime import datetime
 
 
-class UploadToSQL:
+class HandleResult:
     data = []
 
     operating_system = platform.system()
@@ -31,7 +31,8 @@ class UploadToSQL:
             """
 1. MySQL
 2. MS SQL
-3. to be added\n"""))
+3. CSV
+4. JSON\n"""))
 
         if sql == 1:
             mydb = mysql.connector.connect(
@@ -58,7 +59,7 @@ class UploadToSQL:
             except Exception as err:
                 print(err)
 
-                if self.launched_start:
+                if not self.launched_start:
                     if not os.path.exists(os.path.normpath(self.output_dir)):
                         os.mkdir(os.path.normpath(self.output_dir))
 
@@ -69,7 +70,7 @@ class UploadToSQL:
 
                     file_csv = file_name.replace('.json', '.csv')
                     keys = self.data[0].keys()
-                    with open(file_csv, 'w', newline='') as csvFile:
+                    with open(file_csv, 'w', encoding='utf-8') as csvFile:
                         dict_writer = csv.DictWriter(csvFile, keys)
                         dict_writer.writeheader()
                         dict_writer.writerows(self.data)
@@ -127,10 +128,33 @@ class UploadToSQL:
 
                     file_csv = file_name.replace('.json', '.csv')
                     keys = self.data[0].keys()
-                    with open(file_csv, 'w', newline='') as csvFile:
+                    with open(file_csv, 'w', encoding='utf-8') as csvFile:
                         dict_writer = csv.DictWriter(csvFile, keys)
                         dict_writer.writeheader()
                         dict_writer.writerows(self.data)
 
             else:
                 print("Upload succesful")
+
+        elif sql == 3 or sql == 4:
+
+            if not self.launched_start:
+                if not os.path.exists(os.path.normpath(self.output_dir)):
+                    os.mkdir(os.path.normpath(self.output_dir))
+
+            if sql == 3:
+                file_name = f"{self.output_dir}{self.source}_{str(datetime.now()).replace(':', '꞉')}.csv"
+                print(f"Saving to {file_name}")
+                keys = self.data[0].keys()
+                with open(file_name, 'w', newline='', encoding='utf-8') as csvFile:
+                    dict_writer = csv.DictWriter(csvFile, keys)
+                    dict_writer.writeheader()
+                    dict_writer.writerows(self.data)
+
+            if sql == 4:
+                file_name = f"{self.output_dir}{self.source}_{str(datetime.now()).replace(':', '꞉')}.json"
+                print(f"Saving to {file_name}")
+                with open(file_name, 'w') as outFile:
+                    json.dump(self.data, outFile)
+
+
