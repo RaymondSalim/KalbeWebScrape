@@ -189,7 +189,7 @@ class Tokopedia:
                     d['VALUE'] = ""
 
                     discount = driver.find_elements_by_css_selector('div[lblPDPDetailDiscountPercentage]')
-                    d['% DISC'] = float(discount[0].text) if len(discount) > 0 else ""
+                    d['% DISC'] = float(discount[0].text)/100 if len(discount) > 0 else ""
 
                     shop_category = driver.find_elements_by_css_selector('p[data-testid="imgPDPDetailShopBadge"]')
                     d['KATEGORI'] = shop_category[0].text if len(shop_category) > 0 else ""

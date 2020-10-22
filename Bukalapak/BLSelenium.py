@@ -183,7 +183,7 @@ class Bukalapak:
                     discount = driver.find_elements_by_css_selector('span[class="c-main-product__price__discount-percentage"]')
                     if len(discount) > 0:
                         text_disc = discount[0].text.split()
-                    d['% DISC'] = float(text_disc[-1].replace('%', '')) if len(discount) > 0 else ""
+                    d['% DISC'] = float(text_disc[-1].replace('%', ''))/100 if len(discount) > 0 else ""
 
                     shop_category = driver.find_element_by_css_selector('div[class="c-seller__badges"]').text
                     if shop_category.count("Seller") > 1:

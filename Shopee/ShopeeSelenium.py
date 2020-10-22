@@ -184,7 +184,7 @@ class Shopee:
                 disc = driver.find_elements_by_css_selector('div[class="MITExd"]')
                 if len(disc) > 0:
                     disc_float = (disc[0].text)[:(disc[0].text).index('%'):]
-                    d['% DISC'] = float(disc_float)
+                    d['% DISC'] = float(disc_float)/100
                 else:
                     d['% DISC'] = ""
 
