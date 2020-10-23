@@ -5,7 +5,6 @@ import json
 import pyodbc
 import mysql.connector
 import stdiomask
-from datetime import datetime
 
 
 class HandleResult:
@@ -16,18 +15,19 @@ class HandleResult:
     output_dir = ""
 
     if str(operating_system) == 'Linux':
-        output_dir = current_dir.replace('/CLI', '/CLI/Output/')
+        output_dir = current_dir + '/Output/'
 
     elif str(operating_system) == 'Windows':
-        output_dir = current_dir.replace('\\CLI', '\\CLI\\Output\\')
+        output_dir = current_dir + '\\Output\\'
 
-    def __init__(self, data, launched_from_start, source="", file_name=""):
+    def __init__(self, data, launched_from_start, file_name=""):
         self.data = data
         self.launched_start = launched_from_start
-        self.source = source
         self.file_name = file_name
 
     def update(self):
+        print(f"file name is: {self.file_name}")
+
         sql = int(input(
             """
 1. MySQL
@@ -64,12 +64,11 @@ class HandleResult:
                     if not os.path.exists(os.path.normpath(self.output_dir)):
                         os.mkdir(os.path.normpath(self.output_dir))
 
-                    file_name = f"{self.output_dir}{self.source}_{str(datetime.now()).replace(':', '꞉')}.json"
-                    print(f"Saving to {file_name}")
-                    with open(file_name, 'w') as outFile:
+                    print(f"Saving to {self.file_name}")
+                    with open(self.file_name, 'w') as outFile:
                         json.dump(self.data, outFile)
 
-                    file_csv = file_name.replace('.json', '.csv')
+                    file_csv = self.file_name.replace('.json', '.csv')
                     keys = self.data[0].keys()
                     with open(file_csv, 'w', encoding='utf-8') as csvFile:
                         dict_writer = csv.DictWriter(csvFile, keys)
@@ -122,12 +121,11 @@ class HandleResult:
                     if not os.path.exists(os.path.normpath(self.output_dir)):
                         os.mkdir(os.path.normpath(self.output_dir))
 
-                    file_name = f"{self.output_dir}{self.source}_{str(datetime.now()).replace(':', '꞉')}.json"
-                    print(f"Saving to {file_name}")
-                    with open(file_name, 'w') as outFile:
+                    print(f"Saving to {self.file_name}")
+                    with open(self.file_name, 'w') as outFile:
                         json.dump(self.data, outFile)
 
-                    file_csv = file_name.replace('.json', '.csv')
+                    file_csv = self.file_name.replace('.json', '.csv')
                     keys = self.data[0].keys()
                     with open(file_csv, 'w', encoding='utf-8') as csvFile:
                         dict_writer = csv.DictWriter(csvFile, keys)
@@ -142,18 +140,20 @@ class HandleResult:
             if not self.launched_start:
                 if not os.path.exists(os.path.normpath(self.output_dir)):
                     os.mkdir(os.path.normpath(self.output_dir))
+            else:
+                self.file_name = self.current_dir + '/Output/' + self.file_name
+
 
             if sql == 3:
-                file_name = self.output_dir + self.file_name[:self.file_name.rindex('.')] + '.csv'
-                print(f"Saving to {file_name}")
+                self.file_name = self.file_name.replace('.json', '.csv')
+                print(f"Saving to {self.file_name}")
                 keys = self.data[0].keys()
-                with open(file_name, 'w', newline='', encoding='utf-8') as csvFile:
+                with open(self.file_name, 'w', newline='', encoding='utf-8') as csvFile:
                     dict_writer = csv.DictWriter(csvFile, keys)
                     dict_writer.writeheader()
                     dict_writer.writerows(self.data)
 
             if sql == 4:
-                file_name = self.output_dir + self.file_name[:self.file_name.rindex('.')] + '.json'
-                print(f"Saving to {file_name}")
-                with open(file_name, 'w') as outFile:
+                print(f"Saving to {self.file_name}")
+                with open(self.file_name, 'w') as outFile:
                     json.dump(self.data, outFile)
