@@ -42,7 +42,7 @@ class LoadFromFile:
         file_name = files[number]
 
         if "csv" in file_name:
-            print("Cannot load csv file!")
+            print("Not implemented yet")
             return
 
         if str(self.operating_system) == 'Linux':
