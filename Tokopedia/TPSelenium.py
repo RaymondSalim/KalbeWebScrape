@@ -170,10 +170,10 @@ class Tokopedia:
                     d['TOKO'] = driver.find_element_by_css_selector('a[data-testid="llbPDPFooterShopName"]').text
                     driver.implicitly_wait(0)
 
-                    location = driver.find_element_by_css_selector('span[data-testid="lblPDPFooterLastOnline"]').text
-                    d['ALAMAT'] = location.split('•')[0]
+                    d['ALAMAT'] = ""
 
-                    d['KOTA'] = ""
+                    location = driver.find_element_by_css_selector('span[data-testid="lblPDPFooterLastOnline"]').text
+                    d['KOTA'] = location.split('•')[0]
 
                     d['BOX'] = ""
 
@@ -224,14 +224,14 @@ class Tokopedia:
 
                     d['TANGGAL OBSERVASI'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-
-                    self.data.append(d)
-                    self.scraped_count += 1
-                    print(f"    Item #{self.scraped_count} completed")
-
                 except Exception as err:
                     print(err)
                     self.errors.append(driver.current_url)
+
+                else:
+                    self.data.append(d)
+                    self.scraped_count += 1
+                    print(f"    Item #{self.scraped_count} completed")
 
             else:
                 self.errors.append(driver.current_url)
@@ -239,11 +239,12 @@ class Tokopedia:
     def handle_data(self, start_time):
         print("Time taken: " + str(datetime.now() - start_time))
 
-        handle_data = uts.HandleResult(self.data, False, self.id)
+        file_name = f"{self.output_dir}tokopedia_{str(datetime.now()).replace(':', '꞉')}.json"
+
+        handle_data = uts.HandleResult(self.data, False, file_name=file_name)
         handle_data.update()
 
         if len(self.errors) > 0:
-            file_name = f"{self.output_dir}tokopedia_{str(datetime.now()).replace(':', '꞉')}.json"
             with open(file_name.replace('.json', '_errors.json'), 'w') as errorFile:
                 json.dump(self.errors, errorFile)
 
