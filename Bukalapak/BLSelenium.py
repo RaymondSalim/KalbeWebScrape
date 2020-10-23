@@ -197,7 +197,7 @@ class Bukalapak:
                         url = url[:str(driver.current_url).index('?')]
                     d['SOURCE'] = url
 
-                    d['NAMA PRODUK E-COMMERCE'] = driver.find_element_by_css_selector('div[class="c-main-product__head--left"]').text
+                    d['NAMA PRODUK E-COMMERCE'] = driver.find_element_by_css_selector('h1[class="c-main-product__title u-txt--large"]').text
 
                     rating = driver.find_elements_by_css_selector('span[class="summary__score"]')
                     d['RATING (Khusus shopee dan toped dikali 20)'] = float(rating[0].text) if len(rating) > 0 else ""
@@ -211,13 +211,14 @@ class Bukalapak:
 
                     d['TANGGAL OBSERVASI'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-                    self.data.append(d)
-                    self.scraped_count += 1
-                    print(f"    Item #{self.scraped_count} completed")
-
                 except Exception as err:
                     print(err)
                     self.errors.append(driver.current_url)
+
+                else:
+                    self.data.append(d)
+                    self.scraped_count += 1
+                    print(f"    Item #{self.scraped_count} completed")
 
             else:
                 self.errors.append(driver.current_url)
@@ -225,11 +226,12 @@ class Bukalapak:
     def handle_data(self, start_time):
         print("Time taken: " + str(datetime.now() - start_time))
 
-        handle_data = uts.HandleResult(self.data, False, self.id)
+        file_name = f"{self.output_dir}bukalapak_{str(datetime.now()).replace(':', '꞉')}.json"
+
+        handle_data = uts.HandleResult(self.data, False, file_name=file_name)
         handle_data.update()
 
         if len(self.errors) > 0:
-            file_name = f"{self.output_dir}bukalapak_{str(datetime.now()).replace(':', '꞉')}.json"
             with open(file_name.replace('.json', '_errors.json'), 'w') as errorFile:
                 json.dump(self.errors, errorFile)
 
