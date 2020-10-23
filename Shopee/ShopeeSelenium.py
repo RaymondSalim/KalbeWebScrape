@@ -87,7 +87,6 @@ class Shopee:
                 try:
                     new_link = item.find_element_by_tag_name('a').get_attribute('href')
                     self.open_new_tab(new_link, driver)
-                    # driver.execute_script('window.scrollBy(0,100);')
                 except Exception as err:
                     print(err)
                     continue
@@ -154,7 +153,7 @@ class Shopee:
                 d['FARMASI'] = ""
                 d['E-COMMERCE'] = 'SHOPEE'
 
-                self.wait.until(ec.text_to_be_present_in_element((By.CSS_SELECTOR, 'div._3Lybjn')))
+                self.wait.until(ec.text_to_be_present_in_element((By.CSS_SELECTOR, 'div._3Lybjn'), ""))
                 d['TOKO'] = driver.find_element_by_css_selector('div._3Lybjn').text
                 # d['shop_name'] = driver.find_element_by_class_name('_3Lybjn').text
 
@@ -225,13 +224,14 @@ class Shopee:
 
                 d['TANGGAL OBSERVASI'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-                self.data.append(d)
-                self.scraped_count += 1
-                print(f"    Item #{self.scraped_count} completed")
-
             except Exception as err:
                 print(err)
                 self.errors.append(driver.current_url)
+
+            else:
+                self.data.append(d)
+                self.scraped_count += 1
+                print(f"    Item #{self.scraped_count} completed")
 
         else:
             self.errors.append(driver.current_url)
@@ -239,11 +239,12 @@ class Shopee:
     def handle_data(self, start_time):
         print("Time taken: " + str(datetime.now() - start_time))
 
-        handle_data = uts.HandleResult(self.data, False, self.id)
+        file_name = f"{self.output_dir}shopee_{str(datetime.now()).replace(':', '꞉')}.json"
+
+        handle_data = uts.HandleResult(self.data, False, file_name=file_name)
         handle_data.update()
 
         if len(self.errors) > 0:
-            file_name = f"{self.output_dir}shopee_{str(datetime.now()).replace(':', '꞉')}.json"
             with open(file_name.replace('.json', '_errors.json'), 'w') as errorFile:
                 json.dump(self.errors, errorFile)
 
