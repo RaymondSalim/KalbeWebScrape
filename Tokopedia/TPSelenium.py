@@ -17,10 +17,11 @@ class Tokopedia:
     timeout_limit = 10  # Slower internet connection should have a higher value
     scraped_count = 0
 
-    def __init__(self, keyword_in=None, page_lim=None, urls=None):
+    def __init__(self, urls=None, args=None):
         if urls is None:
-            self.keyword = keyword_in
-            self.page_limit = page_lim
+            self.keyword = args.query
+            self.page_limit = args.page
+            self.result = args.result
         else:
             self.url = urls
 
@@ -180,8 +181,11 @@ class Tokopedia:
                     sold_count_valid = driver.find_elements_by_css_selector(
                         'span[data-testid="lblPDPDetailProductSuccessRate"]')
                     sold_count = sold_count_valid[0].text if len(sold_count_valid) > 0 else ""
-                    sold_count = sold_count[8:len(sold_count) - 7:].replace(".", "")
-                    d['JUAL (UNIT TERKECIL)'] = int(sold_count) if (len(sold_count) > 0) else ""
+                    sold_count = sold_count[8:len(sold_count) - 7:].replace(',','').replace('.', '')
+                    if "rb" in sold_count:
+                        sold_count = sold_count.replace('rb', '')
+                        sold_count = int(sold_count) * 100
+                    d['JUAL (UNIT TERKECIL)'] = int(sold_count) if len(sold_count_valid) > 0 else ""
 
                     price = driver.find_element_by_css_selector('h3[data-testid="lblPDPDetailProductPrice"]').text
                     d['HARGA UNIT TERKECIL'] = int((price[2::]).replace(".", ""))
@@ -203,19 +207,19 @@ class Tokopedia:
 
                     rating_total = driver.find_elements_by_css_selector(
                         'span[data-testid="lblPDPDetailProductRatingCounter"]')
-                    d['JML ULASAN'] = int(rating_total[0].text[1:len(rating_total[0].text) - 1:]) if len(
-                        rating_total) > 0 else ""
+                    rating_total = rating_total[0].text.replace('(','').replace(')', '').replace(',','').replace('.', '') if len(rating_total) > 0 else ""
+                    if "rb" in rating_total:
+                        rating_total = rating_total.replace('rb','')
+                        rating_total = int(rating_total) * 100
+
+                    d['JML ULASAN'] = int(rating_total) if len(rating_total) > 0 else ""
 
                     seen_by = (
-                        driver.find_element_by_css_selector('span[data-testid="lblPDPDetailProductSeenCounter"]').text)
-                    seen_by = seen_by[:seen_by.index("x"):]
-                    if 'rb' in seen_by:
-                        if ',' in seen_by:
-                            seen_by = int(seen_by.replace(',', '').replace('rb', '')) * 100
-                        else:
-                            seen_by = int(seen_by.replace('rb', '')) * 1000
-                    else:
-                        seen_by = seen_by.replace('.', '')
+                        driver.find_elements_by_css_selector('span[data-testid="lblPDPDetailProductSeenCounter"]'))
+                    seen_by = seen_by[0].text[:seen_by[0].text.index("x"):].replace('(','').replace(')', '').replace(',','').replace('.', '')
+                    if "rb" in seen_by:
+                        seen_by = seen_by.replace('rb', '')
+                        seen_by = int(seen_by) * 100
 
                     d['DILIHAT'] = int(seen_by)
 
@@ -241,7 +245,7 @@ class Tokopedia:
 
         file_name = f"{self.output_dir}tokopedia_{str(datetime.now()).replace(':', '꞉')}.json"
 
-        handle_data = uts.HandleResult(self.data, False, file_name=file_name)
+        handle_data = uts.HandleResult(data=self.data, launched_from_start=False, file_name=file_name, choice=self.result)
         handle_data.update()
 
         if len(self.errors) > 0:

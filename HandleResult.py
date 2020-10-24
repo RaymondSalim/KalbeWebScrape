@@ -20,22 +20,15 @@ class HandleResult:
     elif str(operating_system) == 'Windows':
         output_dir = current_dir + '\\Output\\'
 
-    def __init__(self, data, launched_from_start, file_name=""):
+    def __init__(self, data=None, launched_from_start=None, file_name="", choice=""):
         self.data = data
         self.launched_start = launched_from_start
         self.file_name = file_name
+        self.choice = choice.lower()
 
     def update(self):
-        print(f"file name is: {self.file_name}")
 
-        sql = int(input(
-            """
-1. MySQL
-2. MS SQL
-3. CSV
-4. JSON\n"""))
-
-        if sql == 1:
+        if self.choice == 'mysql':
             mydb = mysql.connector.connect(
                 host=input("Enter SQL Server\n"),
                 user=input("Enter SQL Username\n"),
@@ -78,7 +71,7 @@ class HandleResult:
             else:
                 print("Upload succesful")
 
-        elif sql == 2:
+        elif self.choice == "sqls":
             ## https://docs.microsoft.com/en-us/sql/connect/python/pyodbc/step-3-proof-of-concept-connecting-to-sql-using-pyodbc?view=sql-server-ver15
             server = input('Enter SQL Server\n')
             database = input('Enter SQL Database\n')
@@ -135,7 +128,7 @@ class HandleResult:
             else:
                 print("Upload succesful")
 
-        elif sql == 3 or sql == 4:
+        else:
 
             if not self.launched_start:
                 if not os.path.exists(os.path.normpath(self.output_dir)):
@@ -143,17 +136,20 @@ class HandleResult:
             else:
                 self.file_name = self.current_dir + '/Output/' + self.file_name
 
-
-            if sql == 3:
+            if self.choice == 'csv':
                 self.file_name = self.file_name.replace('.json', '.csv')
                 print(f"Saving to {self.file_name}")
                 keys = self.data[0].keys()
-                with open(self.file_name, 'w', newline='', encoding='utf-8') as csvFile:
-                    dict_writer = csv.DictWriter(csvFile, keys)
-                    dict_writer.writeheader()
-                    dict_writer.writerows(self.data)
+                try:
+                    with open(self.file_name, 'w', newline='', encoding='utf-8') as csvFile:
+                        dict_writer = csv.DictWriter(csvFile, keys)
+                        dict_writer.writeheader()
+                        dict_writer.writerows(self.data)
+                except:
+                    with open(self.file_name, 'w') as outFile:
+                        json.dump(self.data, outFile)
 
-            if sql == 4:
+            if self.choice == 'json':
                 print(f"Saving to {self.file_name}")
                 with open(self.file_name, 'w') as outFile:
                     json.dump(self.data, outFile)

@@ -43,6 +43,13 @@ tokopedia_2020-10-22 23꞉00꞉46.819105.json
     - Total items: 445
     - Avg time: 4.6787s / item
 
+tokopedia_2020-10-24 14꞉21꞉10.929069.csv
+    - Time taken: 0:19:54.232280
+    - Total items: 381
+    - Avg time: 3.1339s / item
+
+
+
 bukalapak2020-10-18 00꞉12꞉32.991648.txt
     - Time taken: 0:27:41.103554
     - Total items: 760
@@ -62,6 +69,11 @@ bukalapak_2020-10-22 19꞉06꞉54.106249.json
     - Time taken: 0:14:47.947014
     - Total items: 160
     - Avg time: 5.55s / item
+
+bukalapak_2020-10-24 14꞉07꞉45.110201.csv
+    - Time taken: 0:05:48.733950
+    - Total items: 160
+    - Avg time: 2.1813s / item
 
 shopee_2020-10-18 01꞉14꞉09.542510.txt
     - Time taken: 0:09:29.806884

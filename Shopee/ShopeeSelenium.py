@@ -17,10 +17,11 @@ class Shopee:
     timeout_limit = 10  # Slower internet connection should have a higher value
     scraped_count = 0
 
-    def __init__(self, keyword_in=None, page_lim=None, urls=None):
+    def __init__(self, urls=None, args=None):
         if urls is None:
-            self.keyword = keyword_in
-            self.page_limit = page_lim
+            self.keyword = args.query
+            self.page_limit = args.page
+            self.result = args.result
         else:
             self.url = urls
 
@@ -241,7 +242,7 @@ class Shopee:
 
         file_name = f"{self.output_dir}shopee_{str(datetime.now()).replace(':', '꞉')}.json"
 
-        handle_data = uts.HandleResult(self.data, False, file_name=file_name)
+        handle_data = uts.HandleResult(data=self.data, launched_from_start=False, file_name=file_name, choice=self.result)
         handle_data.update()
 
         if len(self.errors) > 0:
