@@ -17,7 +17,9 @@ class LoadFromFile:
     elif str(operating_system) == 'Windows':
         current_dir = current_dir + '\\Output\\'
 
-    def __init__(self):
+    def __init__(self, args):
+        self.file_name = args.filename
+        self.result = args.result
         pass
 
     def main(self):
@@ -32,18 +34,7 @@ class LoadFromFile:
             print("No files found")
             return
 
-        print('\n*************************************************************\n')
-        for i in range(len(files)):
-            print(f"{i+1}. {files[i]}")
-        print('\n*************************************************************\n')
-
-        number = int(input('Enter the number of the file\n')) - 1
-
-        file_name = files[number]
-
-        if "csv" in file_name:
-            print("Not implemented yet")
-            return
+        file_name = self.file_name
 
         if str(self.operating_system) == 'Linux':
             file = f"{self.current_dir}/{file_name}"
@@ -52,8 +43,14 @@ class LoadFromFile:
             file = f"{self.current_dir}\\{file_name}"
 
         try:
-            with open(file, 'r') as openFile:
-                self.data = json.load(openFile)
+            if "json" in file:
+                with open(file, 'r') as openFile:
+                    self.data = json.load(openFile)
+
+            elif "csv" in file:
+                with open(file, 'r') as openFile:
+                    self.data = [{key: (int(value) if value.isnumeric() else value) for key, value in row.items()}
+                                 for row in csv.DictReader(openFile, skipinitialspace=True)]
         except Exception as err:
             print(err)
             return
@@ -64,7 +61,8 @@ class LoadFromFile:
                 load_error.start()
 
             else:
-                upload_sql = uts.HandleResult(self.data, True, file_name=file_name)
+                print(self.result)
+                upload_sql = uts.HandleResult(self.data, True, file_name=file_name, choice=self.result)
                 upload_sql.update()
 
 

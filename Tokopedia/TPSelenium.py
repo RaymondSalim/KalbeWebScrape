@@ -7,7 +7,7 @@ from datetime import datetime
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
-from selenium.common.exceptions import TimeoutException, NoSuchElementException
+from selenium.common.exceptions import TimeoutException, NoSuchElementException, WebDriverException
 
 
 class Tokopedia:
@@ -17,11 +17,20 @@ class Tokopedia:
     timeout_limit = 10  # Slower internet connection should have a higher value
     scraped_count = 0
 
-    def __init__(self, urls=None, args=None):
+    def __init__(self, urls=None, args=None, completed_url=None, continue_args=None):
         if urls is None:
-            self.keyword = args.query
-            self.page_limit = args.page
-            self.result = args.result
+            if completed_url is None:
+                self.keyword = args.query
+                self.page_limit = args.page
+                self.result = args.result
+                self.file_name = None
+                self.completed_url = []
+            else:
+                self.page_limit = 99999
+                self.keyword = continue_args['keyword']
+                self.completed_url = completed_url
+                self.result = continue_args['result']
+                self.file_name = continue_args['filename'].replace('.csv', '_continued.csv').replace('.json', '_continued.json')
         else:
             self.url = urls
 
@@ -81,9 +90,11 @@ class Tokopedia:
             for items in elems:
                 try:
                     new_link = items.get_attribute("href")
+
                     self.open_new_tab(new_link, driver)
 
-                except:
+                except Exception as err:
+                    print(err)
                     continue
 
             page += 1
@@ -125,6 +136,12 @@ class Tokopedia:
         # Waits for redirects
         try:
             self.wait.until_not(ec.url_contains("ta.tokopedia"))
+            if any(completed in driver.current_url for completed in self.completed_url):
+                print("Item skipped")
+                driver.execute_script("window.close();")
+                handle = driver.window_handles
+                driver.switch_to.window(handle[0])
+                return
         except:
             # Closes and switch focus to the main tab
             driver.execute_script("window.close();")
@@ -162,6 +179,9 @@ class Tokopedia:
                 try:
                     driver.implicitly_wait(0)
                     d = dict()
+
+                    d['KEYWORD'] = self.keyword
+
 
                     d['PRODUK'] = ""
                     d['FARMASI'] = ""
@@ -228,6 +248,10 @@ class Tokopedia:
 
                     d['TANGGAL OBSERVASI'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+                except WebDriverException as err:
+                    print(err)
+                    self.errors.append(driver.current_url)
+
                 except Exception as err:
                     print(err)
                     self.errors.append(driver.current_url)
@@ -243,13 +267,17 @@ class Tokopedia:
     def handle_data(self, start_time):
         print("Time taken: " + str(datetime.now() - start_time))
 
-        file_name = f"{self.output_dir}tokopedia_{str(datetime.now()).replace(':', '꞉')}.json"
+        if self.file_name is None:
+            self.file_name = f"{self.output_dir}tokopedia_{str(datetime.now()).replace(':', '꞉')}.json"
 
-        handle_data = uts.HandleResult(data=self.data, launched_from_start=False, file_name=file_name, choice=self.result)
+        else:
+            self.file_name = f"{self.output_dir}{self.file_name}"
+
+        handle_data = uts.HandleResult(data=self.data, launched_from_start=False, file_name=self.file_name, choice=self.result)
         handle_data.update()
 
         if len(self.errors) > 0:
-            with open(file_name.replace('.json', '_errors.json'), 'w') as errorFile:
+            with open(self.file_name.replace('.json', '_errors.json'), 'w') as errorFile:
                 json.dump(self.errors, errorFile)
 
     def scrape_errors(self):

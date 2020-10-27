@@ -47,8 +47,10 @@ class Main:
                 self.process.scrape_search_results()
 
         elif self.command == 'load':
-            load_json = lff.LoadFromFile()
+            load_json = lff.LoadFromFile(args=self.args)
             load_json.main()
+
+
         else:
             print("rip")
 
@@ -60,9 +62,10 @@ class Main:
             output_dir = str(os.path.dirname(os.path.realpath(__file__)))
 
             if str(self.operating_system) == 'Linux':
-                output_dir = output_dir.replace('/CLI', '/CLI/Output/')
+                output_dir = output_dir + '/Output/'
+
             elif str(self.operating_system) == 'Windows':
-                output_dir = output_dir.replace('\\CLI', '\\CLI\\Output\\')
+                output_dir = output_dir + '\\Output\\'
 
             file_name = f"{output_dir}{self.process.id}_{str(datetime.now()).replace(':', '꞉')}.json"
 

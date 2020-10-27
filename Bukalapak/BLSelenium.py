@@ -17,17 +17,27 @@ class Bukalapak:
     timeout_limit = 10  # Slower internet connection should have a higher value
     scraped_count = 0
 
-    def __init__(self, urls=None, args=None):
+    def __init__(self, urls=None, args=None, completed_url=None, continue_args=None):
         if urls is None:
-            self.keyword = args.query
-            self.page_limit = args.page
-            self.result = args.result
+            if completed_url is None:
+                self.keyword = args.query
+                self.page_limit = args.page
+                self.result = args.result
+                self.file_name = None
+                self.completed_url = []
+            else:
+                self.page_limit = 99999
+                self.keyword = continue_args['keyword']
+                self.completed_url = completed_url
+                self.result = continue_args['result']
+                self.file_name = continue_args['filename'].replace('.csv', '_continued.csv').replace('.json', '_continued.json')
         else:
             self.url = urls
 
         self.data = []
         self.errors = []
         self.current_dir = str(os.path.dirname(os.path.realpath(__file__)))
+
 
         if str(self.operating_system) == 'Linux':
             self.output_dir = self.current_dir.replace('/Bukalapak', '/Output/')
@@ -73,39 +83,59 @@ class Bukalapak:
 
         page = 1
 
+        attempt = 0
         while page <= self.page_limit:
-            print(f"Page {page}")
-            elems = driver.find_elements_by_css_selector('div[class="bl-product-card__wrapper"]')
-
-            for items in elems:
-                try:
-                    temp_url = items.find_element_by_tag_name('a').get_attribute('href')
-                    self.open_new_tab(temp_url, driver)
-
-                except:
-                    continue
-
-            page += 1
-
-
             try:
-                driver.implicitly_wait(3)
-                next_button = driver.find_element_by_class_name('bl-pagination__next')
-
-                if next_button.is_enabled():
-                    driver.implicitly_wait(0)
-                    driver.get(next_button.get_attribute('href'))
-                    # wait = WebDriverWait(driver, self.timeout_limit)
-                    # wait.until(ec.presence_of_element_located((By.CLASS_NAME, 'div[class="bl-product-card__wrapper"]')))
+                self.wait.until(ec.presence_of_element_located((By.XPATH, '//div[@class="bl-product-card__thumbnail"]//*//a')), "No items found on this page")
+            except:
+                # Retry one more time
+                attempt += 1
+                page -= 1
+                if attempt > 1:
+                    break
                 else:
+                    continue
+            else:
+                attempt = 0
+
+                print(f"Page {page}")
+                elems = driver.find_elements_by_css_selector('div[class="bl-product-card__description"]')
+
+                for items in elems:
+                    try:
+                        temp_url = items.find_element_by_tag_name('a').get_attribute('href')
+                        if any(completed in temp_url for completed in self.completed_url):
+                            print("Item skipped")
+                            continue
+
+                        self.open_new_tab(temp_url, driver)
+
+                    except Exception as err:
+                        print(err)
+                        continue
+
+                page += 1
+
+
+                try:
+                    next_button = driver.find_element_by_css_selector("a[class*='pagination__next']")
+
+                    if next_button.is_enabled():
+                        print("Next page")
+                        driver.implicitly_wait(0)
+                        next_button.click()
+                        # wait = WebDriverWait(driver, self.timeout_limit)
+                        # wait.until(ec.presence_of_element_located((By.CLASS_NAME, 'div[class="bl-product-card__wrapper"]')))
+                    else:
+                        break
+
+                except TimeoutException as err:
+                    print(err)
                     break
 
-            except TimeoutException as err:
-                print(err)
-                break
+                except NoSuchElementException as err:
+                    break
 
-            except NoSuchElementException as err:
-                break
 
         driver.quit()
 
@@ -145,6 +175,8 @@ class Bukalapak:
                 try:
                     driver.implicitly_wait(0)
                     d = dict()
+
+                    d['KEYWORD'] = self.keyword
 
                     d['PRODUK'] = ""
                     d['FARMASI'] = ""
@@ -227,13 +259,17 @@ class Bukalapak:
     def handle_data(self, start_time):
         print("Time taken: " + str(datetime.now() - start_time))
 
-        file_name = f"{self.output_dir}bukalapak_{str(datetime.now()).replace(':', '꞉')}.json"
 
-        handle_data = uts.HandleResult(data=self.data, launched_from_start=False, file_name=file_name, choice=self.result)
+        if self.file_name is None:
+            self.file_name = f"{self.output_dir}bukalapak_{str(datetime.now()).replace(':', '꞉')}.json"
+        else:
+            self.file_name = f"{self.output_dir}{self.file_name}"
+
+        handle_data = uts.HandleResult(data=self.data, launched_from_start=False, file_name=self.file_name, choice=self.result)
         handle_data.update()
 
         if len(self.errors) > 0:
-            with open(file_name.replace('.json', '_errors.json'), 'w') as errorFile:
+            with open(self.file_name.replace('.json', '_errors.json'), 'w') as errorFile:
                 json.dump(self.errors, errorFile)
 
     def scrape_errors(self):
