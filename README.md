@@ -1,5 +1,10 @@
 # WebScraping
 
+## First steps
+```
+pip install selenium
+```
+
 ### Pengunaan:
 
 #### Scraping:
