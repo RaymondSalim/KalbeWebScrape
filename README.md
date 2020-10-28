@@ -1,6 +1,8 @@
 # WebScraping
-###Pengunaan:
-####Scraping:
+
+### Pengunaan:
+
+#### Scraping:
 ```
 python main.py scrape
 ```
