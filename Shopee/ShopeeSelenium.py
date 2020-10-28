@@ -80,6 +80,9 @@ class Shopee:
 
         driver.get(final_url)
 
+        if self.page_limit == 0:
+            self.page_limit = 99999
+
         page = 1
 
         while page <= self.page_limit:

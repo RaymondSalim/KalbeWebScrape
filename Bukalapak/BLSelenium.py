@@ -83,6 +83,9 @@ class Bukalapak:
 
         page = 1
 
+        if self.page_limit == 0:
+            self.page_limit = 99999
+
         attempt = 0
         while page <= self.page_limit:
             try:
