@@ -156,19 +156,25 @@ class HandleResult:
             data = []
 
             if "csv" in filepath:
+                print(filepath)
                 with open(filepath, 'r') as openFile:
                     data = [{key: (int(value) if value.isnumeric() else value) for key, value in row.items()}
                                  for row in csv.DictReader(openFile, skipinitialspace=True)]
+                print(f"Length of data is {len(data)}")
 
                 filepath = filepath.replace('_continued', '')
 
+                print(filepath)
                 with open(filepath, 'r') as openFile:
                     tempdata = [{key: (int(value) if value.isnumeric() else value) for key, value in row.items()}
                             for row in csv.DictReader(openFile, skipinitialspace=True)]
+                print(f"Length of tempdata is {len(tempdata)}")
 
                 finaldata = data + tempdata
+                print(f"Length of finaldata is {len(finaldata)}")
+
                 print(f"Saving to {filepath}")
-                self.save_csv(filepath, finaldata)
+                # self.save_csv(filepath, finaldata)
 
             elif "json" in filepath:
                 with open(filepath, 'r') as openFile:

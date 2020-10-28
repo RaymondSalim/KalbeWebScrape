@@ -1,0 +1,8 @@
+Scraping
+    python main.py scrape -m marketplace -q "search query" -p pagenum -r csv/json
+
+Converting
+    python main.py load -f pathtofile -r csv/json
+
+Continuing
+    python main.py load -f pathtofile -r continue
