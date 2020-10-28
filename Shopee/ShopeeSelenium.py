@@ -33,6 +33,9 @@ class Shopee:
                 self.file_name = continue_args['filename'].replace('.csv', '_continued.csv').replace('.json', '_continued.json')
         else:
             self.url = urls
+            self.file_name = args.filename
+            self.keyword = ""
+            self.result = args.result
 
         self.data = []
         self.errors = []
@@ -276,6 +279,7 @@ class Shopee:
 
     def scrape_errors(self):
         driver = self.start_driver()
+        self.file_name.replace('errors', 'err_retry')
 
         start_time = datetime.now()
 

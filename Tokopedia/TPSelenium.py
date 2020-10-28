@@ -33,6 +33,10 @@ class Tokopedia:
                 self.file_name = continue_args['filename'].replace('.csv', '_continued.csv').replace('.json', '_continued.json')
         else:
             self.url = urls
+            self.file_name = args.filename
+            self.keyword = ""
+            self.result = args.result
+
 
         self.data = []
         self.errors = []

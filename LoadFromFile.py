@@ -18,6 +18,7 @@ class LoadFromFile:
         current_dir = current_dir + '\\Output\\'
 
     def __init__(self, args):
+        self.args = args
         self.file_name = args.filename
         self.result = args.result
         pass
@@ -57,7 +58,7 @@ class LoadFromFile:
         else:
             if "error" in file:
                 print(f"Retrying {len(self.data)} errors")
-                load_error = LoadError(self.data, file)
+                load_error = LoadError(self.data, self.args)
                 load_error.start()
 
             else:
@@ -67,19 +68,20 @@ class LoadFromFile:
 
 
 class LoadError:
-    def __init__(self, data, file_name):
+    def __init__(self, data, args):
         self.data = data
-        self.f_name = file_name
+        self.args = args
+        self.f_name = args.filename
 
     def start(self):
         if "tokopedia" in self.f_name:
-            process = TPSelenium.Tokopedia(urls=self.data)
+            process = TPSelenium.Tokopedia(urls=self.data, args=self.args)
             process.scrape_errors()
 
         if "shopee" in self.f_name:
-            process = ShopeeSelenium.Shopee(urls=self.data)
+            process = ShopeeSelenium.Shopee(urls=self.data, args=self.args)
             process.scrape_errors()
 
         if "bukalapak" in self.f_name:
-            process = BLSelenium.Bukalapak(urls=self.data)
+            process = BLSelenium.Bukalapak(urls=self.data, args=self.args)
             process.scrape_errors()
