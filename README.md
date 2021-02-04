@@ -1,3 +1,7 @@
+# THIS REPOSITORY IS ARCHIVED PLEASE CHECK THE UPDATED VERSION <a href="https://github.com/RaymondSalim/FinalWebScrape">HERE</a>
+<hr>
+
+
 # WebScraping
 
 ## First steps
